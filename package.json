@@ -1,12 +1,15 @@
 {
   "name": "uday",
   "version": "1.0.0",
-  "description": "",
+  "description": "backend full project of youtube clone",
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "start" : "node index.js"
+    "dev": "nodemon src/node index.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
