@@ -3,8 +3,20 @@ import connectDB from './db/index.js'
 
 dotenv.config({ path: './.env' });
 
-
 connectDB()
+.then(() => {
+    app.on("error",(error)=>{
+        console.log(`connection is failed ${error}`)
+        throw error
+    })
+
+    app.listen(process.env.PORT || 3000, () => {
+        console.log(`server is running at ${process.env.PORT}`);
+    })
+})
+.catch((error) => {
+    console.log(`mongose connection is failed due to ${error} `);
+})
 
 
 
