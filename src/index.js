@@ -1,8 +1,11 @@
 import dotenv from 'dotenv'
 import connectDB from './db/index.js'
 import express from "express"
+import userRouter from "./routes/user.route.js"
+import { app } from "./app.js"
 
-const app = express();
+
+// const app = express();
 
 dotenv.config({ path: './.env' });
 
@@ -12,8 +15,11 @@ connectDB()
         console.log(`connection is failed ${error}`)
         throw error
     })
-
-    app.listen(process.env.PORT || 3000, () => {
+    app.use("", userRouter)
+    app.get("/",(req,res)=>{
+        res.send("Hello World!")
+    })
+    app.listen(process.env.PORT || 2005, () => {
         console.log(`server is running at ${process.env.PORT}`);
     })
 })

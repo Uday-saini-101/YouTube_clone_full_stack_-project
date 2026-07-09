@@ -1,9 +1,11 @@
-const asycnHandler = (requestHandler) => {
+// import asyncHandlers from "express-async-handler";
+
+const asyncHandler = (requestHandler) => {
   return (req , res, next) => Promise.resolve(requestHandler(req,res,next))
   .catch((err) => next(err));
 }
 
-export { asycnHandler , }
+export { asyncHandler , }
 
 // const asyncHandler = (requestHandler) => async (req ,res ,next) => {
 //   try{
