@@ -25,4 +25,4 @@ cloudinary.config({
     return null
    }
   }
-export default Uploadcloudinary
+export { Uploadcloudinary }
