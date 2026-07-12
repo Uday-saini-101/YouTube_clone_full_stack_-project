@@ -16,8 +16,8 @@ const registerUser = asyncHandler(async (req,res ) =>{
   // check some required things/vaildetion
 
   if(
-    [fullName , email , password , number].some((field)=>
-    field?.trim()=== "")
+    [fullName , email , password ].some((field)=>
+    field?.trim() === "")
   ){
     throw new ApiError(400 , "email must required")
   }
@@ -29,7 +29,7 @@ const registerUser = asyncHandler(async (req,res ) =>{
   // }
 
  // check user already exist or not 
-  const existingUser= User.findOne({
+  const existingUser = await User.findOne({
     $or :[{ username },{ email }]
   })
   if(existingUser) {
@@ -37,19 +37,24 @@ const registerUser = asyncHandler(async (req,res ) =>{
   }
 
   //check avater or coverImage 
-  const avatarLocalPath = req.field?.avatar[0]?.path;
-  const coverImageLocalPath = req.field?.coverImage[0]?.path;
+  const avatarLocalPath = req.files?.avatar?.[0]?.path;
+  const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+   
+  // console.log("req.file:", req.file);
+  // console.log("req.files:", req.files);
+  // console.log("Avatar Path:", avatarLocalPath);
 
   if(!avatarLocalPath){
-    throw new ApiError (400 , "avatar file is not uploaded" )
+    throw new ApiError (400 , "avatar file is not uploaded 1" )
   }
+ 
 
   //upload on cloudinary
   const avatar = await Uploadcloudinary(avatarLocalPath)
   const coverImage = await Uploadcloudinary(coverImageLocalPath)
 
   if(!avatar){
-    throw new ApiError (400 , "avatar file is not uploaded" )
+    throw new ApiError (400 , "avatar file is not uploaded 2" )
   }
 
   // upload the data on mongose database
@@ -63,7 +68,7 @@ const registerUser = asyncHandler(async (req,res ) =>{
   })
 
   // remove password and refreshToken from responce
-  const createUser = await User.findById(user._id).select(
+  const createUser = await user.findById(user._id).select(
     "-password -refreshToken"
   )
   if(!createUser){
