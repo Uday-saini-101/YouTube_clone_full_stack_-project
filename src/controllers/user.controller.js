@@ -6,7 +6,7 @@ import { ApiResponce } from "../utils/apiResponce.js"
 
 const registerUser = asyncHandler(async (req,res ) =>{
   // get data from user side and image upload in cloudinary
-  const {fullName , username ,email , password , number }=req.body
+  const {fullName, username ,email , password , number }=req.body
   console.log("fullname :",fullName,
                "username",username,
               "email :",email,
@@ -68,7 +68,7 @@ const registerUser = asyncHandler(async (req,res ) =>{
   })
 
   // remove password and refreshToken from responce
-  const createUser = await user.findById(user._id).select(
+  const createUser = await User.findById(user._id).select(
     "-password -refreshToken"
   )
   if(!createUser){
