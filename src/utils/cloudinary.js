@@ -1,4 +1,5 @@
 import {v2 as cluodinary } from "cloudinary"
+import { LOADIPHLPAPI } from "dns";
 import { response } from "express";
 import fs from "fs"
 import { resourceLimits } from "worker_threads";
@@ -16,8 +17,10 @@ cluodinary.config({
     const responce = await cluodinary.uploader.upload
     (LocalFilePath , {resource_type: "auto"});
       
-   console.log("file is sucessfully uploaded on cloudinary", response.url);
-   return responce ;
+  //  console.log("file is sucessfully uploaded on cloudinary", response.url);
+      return responce ;
+      fs.unlinkSync(LOADIPHLPAPI)
+
    }
    catch (error)
    {

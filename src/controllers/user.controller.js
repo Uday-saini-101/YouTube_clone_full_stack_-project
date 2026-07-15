@@ -38,7 +38,14 @@ const registerUser = asyncHandler(async (req,res ) =>{
 
   //check avater or coverImage 
   const avatarLocalPath = req.files?.avatar?.[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+  // const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+
+  // classic method of javascript
+   let coverImageLocalPath ;
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0)
+   {
+    coverImageLocalPath = req.files.coverImage[0].path
+   }
    
   // console.log("req.file:", req.file);
   // console.log("req.files:", req.files);
@@ -77,7 +84,8 @@ const registerUser = asyncHandler(async (req,res ) =>{
  
   // return responce
 return res.status(201).json(
-  new ApiResponce(200 , createUser , "User create successfully")
+  new ApiResponce(200 , createUser , "User create successfully"),
+  console.log("User create successfully")
 )
 
 })
