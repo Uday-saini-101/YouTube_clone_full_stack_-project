@@ -4,6 +4,26 @@ import { User } from "../models/user.model.js"
 import { Uploadcloudinary } from "../utils/cloudinary.js"
 import { ApiResponce } from "../utils/apiResponce.js"
 
+const generateAccesTokenOrRefershToken = async (userId) => {
+
+try {
+
+  const user = await User.findById(userId)
+  const accessToken = user.generateAccessToken()
+  const refreshToken =  user.generateRefccessToken()
+
+  // sava refersh token data base
+  user.refreshToken = refreshToken
+  await user.save({valideteBeforeSave: false})
+
+  return { refreshToken , accessToken}
+
+}catch(error){
+  throw new ApiError(500 , "someting went wrong in generating access or refersh token ")
+}
+
+}
+
 const registerUser = asyncHandler(async (req,res ) =>{
   // get data from user side and image upload in cloudinary
   const {fullName, username ,email , password , number }=req.body
@@ -89,4 +109,51 @@ return res.status(201).json(
 )
 
 })
-export { registerUser }
+
+const loginuser = asyncHandler (async (req , res) => {
+
+  const { username , email , password} = req.body 
+
+  // check username or email have or not 
+  if( !username || !email) {
+    throw new ApiError (" 400 , username or email one ust be rerqired ")
+  }
+
+  const user = await User.findOne({
+    $or: [{username}, {email}]
+  })
+
+  // check username or email have or not 
+  if( !user) {
+    throw new ApiError ( 401 ," user does not exist ")
+  }
+
+  //  check password is correct or not 
+  const isPasswordVaild = user.isPasswordCorrect(password)
+
+  if( !isPasswordVaild) {
+    throw new ApiError ( 402 ," password is incorrect  ")
+  } 
+
+ const { refreshToken , accessToken } = await generateAccesTokenOrRefershToken(user._id)
+
+ const loggedInUser = await  User.findById(user._id).select( " -password -refreshToken ")
+
+ const option = {
+  httpOnly: true ,
+  secure: true
+ }
+
+ return res.status(200)
+ .cookie("accessToken",accessToken,option)
+ .cookie("refreshToken",refreshToken,option)
+ .json(
+    new ApiResponce(
+      200,
+      {user: loggedInUser , accessToken , refreshToken },
+      "user logged successfully"
+    )
+  )
+
+})
+export { registerUser , loginuser }
