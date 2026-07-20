@@ -171,7 +171,7 @@ const logOutUser = asyncHandler ( async (req, res) => {
       }
     },
    {
-    new : true
+    returnDocument: "after"
    }
   )
   const option = {
@@ -180,8 +180,8 @@ const logOutUser = asyncHandler ( async (req, res) => {
  }
 
  return res.status(200)
- .ClearCookie("accessToken",option)
- .ClearCookie("refreshToken",option)
+ .clearCookie("accessToken",option)
+ .clearCookie("refreshToken",option)
  .json(
     new ApiResponce(
       200,
