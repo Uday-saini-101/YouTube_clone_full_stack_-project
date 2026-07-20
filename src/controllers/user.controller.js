@@ -9,6 +9,9 @@ const generateAccesTokenOrRefershToken = async (userId) => {
 try {
 
   const user = await User.findById(userId)
+   if (!user) {
+            throw new Error("User not found")
+        }
   const accessToken = user.generateAccessToken()
   const refreshToken =  user.generateRefccessToken()
 
@@ -19,6 +22,7 @@ try {
   return { refreshToken , accessToken}
 
 }catch(error){
+  // console.log("REAL ERROR:", error)
   throw new ApiError(500 , "someting went wrong in generating access or refersh token ")
 }
 
@@ -115,7 +119,7 @@ const loginuser = asyncHandler (async (req , res) => {
   const { username , email , password} = req.body 
 
   // check username or email have or not 
-  if( !username || !email) {
+  if( !username && !email) {
     throw new ApiError (" 400 , username or email one ust be rerqired ")
   }
 
