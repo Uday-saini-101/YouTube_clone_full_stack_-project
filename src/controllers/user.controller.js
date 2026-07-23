@@ -285,4 +285,69 @@ const updateAccountDetails = asyncHandler ( async (req , res) => {
  .status(200)
  .json( new ApiResponce(200 , "user , Account details are updated successfully"))
 })
-export { registerUser , loginuser , logOutUser , RefreshAccessToken , changeCurrentPassword , getCurrentUser , updateAccountDetails }
+
+const updateUserAvatra = asyncHandler( async (req,res) =>{
+
+  const avatraLocalPath = req.file?.path
+  if (!avatraLocalPath) {
+    throw new ApiError (401 , "avatra local path is missing")
+  }
+
+ const avatar = Uploadcloudinary(avatraLocalPath)
+ if (!avatar.url) {
+       throw new ApiError (401 , "avatar url is not uploded")
+ }
+
+ const user = await User.findByIdAndUpdate(
+  req.user?._id,
+  {
+    $set:{
+      avatar : avatar.url
+    } 
+  },
+  {new : true}
+ ).select("-password")
+return res 
+.status(200)
+.json(
+  new ApiResponce (200 , user , "avatra is successfully uploaded")
+)
+})
+
+const updateUserCoverImage = asyncHandler( async (req,res) =>{
+
+  const coverImageLocalPath = req.file?.path
+  if (!coverImageLocalPath) {
+    throw new ApiError (401 , "coverImage local path is missing")
+  }
+
+ const coverImage = Uploadcloudinary(coverImageLocalPath)
+ if (!coverImage.url) {
+       throw new ApiError (401 , "coverImage url is not uploded")
+ }
+
+ const user = await User.findByIdAndUpdate(
+  req.user?._id,
+  {
+    $set:{
+      coverImage : coverImage.url
+    } 
+  },
+  {new : true}
+ ).select("-password")
+return res 
+.status(200)
+.json(
+  new ApiResponce (200 , user , "coverImage is successfully uploaded")
+)
+})
+export { registerUser ,
+         loginuser ,
+         logOutUser ,
+         RefreshAccessToken ,
+         changeCurrentPassword ,
+         getCurrentUser ,
+         updateAccountDetails ,
+         updateUserAvatra ,
+         updateUserCoverImage
+         }
